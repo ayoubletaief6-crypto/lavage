@@ -108,7 +108,7 @@ h1 i{width:12px;height:28px;background:var(--sign);border-radius:3px;display:inl
   var FB={apiKey:'AIzaSyCHkfTlonVVb-5KnGBDWRlfu-2nG1QSPYE',authDomain:'lavage-sofiane.firebaseapp.com',projectId:'lavage-sofiane',appId:'1:839253252059:web:b93c657cae6403a23c79fe'};
   var KEY='carwash-rdv-v1', items=[], cur=iso(new Date()), editId=null;
   var db=null,seed=[],seeded=false;
-  function fmt(n){return String(n||0).replace(/\B(?=(\d{3})+(?!\d))/g,' ')}
+  function fmt(n){return '\u2066'+String(n||0).replace(/\B(?=(\d{3})+(?!\d))/g,'\u00a0')+'\u2069'}
   function setSync(ok,msg){var s=document.getElementById('sync');s.textContent=msg||(ok?'● مشترك بين الأجهزة':'على هذا الجهاز فقط')}
   function cache(){try{localStorage.setItem(KEY,JSON.stringify(items))}catch(e){}}
   function load(){
@@ -124,18 +124,20 @@ h1 i{width:12px;height:28px;background:var(--sign);border-radius:3px;display:inl
     firebase.auth().onAuthStateChanged(function(u){
       if(!u){$('login').classList.add('open');return}
       $('login').classList.remove('open');
-      db=firebase.firestore();
-      db.collection('rdv').onSnapshot(function(s){
+      db=firebase.firestore();try{db.settings({experimentalForceLongPolling:true,merge:true})}catch(e){}
+      db.collection('rdv').onSnapshot({includeMetadataChanges:true},function(s){
         if(s.empty&&seed.length&&!seeded){seeded=true;seed.forEach(function(o){db.collection('rdv').doc(o.id).set(o).catch(function(){})});return}
-        items=s.docs.map(function(x){return x.data()});cache();render();setSync(true);
-      },function(){setSync(false)});
+        items=s.docs.map(function(x){return x.data()});cache();render();
+        if(s.metadata.fromCache)setSync(false,'جاري الاتصال بالسيرفر...');else setSync(true);
+      },function(e){setSync(false,'خطأ: '+(e&&e.code||''))});
     });
   }
   function put(o){
     var i=items.findIndex(function(x){return x.id===o.id});
     if(i>=0)items[i]=o;else items.push(o);
     cache();render();
-    if(db)db.collection('rdv').doc(o.id).set(o).catch(function(){setSync(false,'ما تحفظش: ما عندكش صلاحية الكتابة')});
+    if(db){var t=setTimeout(function(){setSync(false,'الموعد ما وصلش للسيرفر')},8000);
+      db.collection('rdv').doc(o.id).set(o).then(function(){clearTimeout(t);setSync(true)}).catch(function(e){clearTimeout(t);setSync(false,'ما تحفظش: '+(e&&e.code||''))})}
   }
   function remove(id){
     items=items.filter(function(i){return i.id!==id});cache();render();
