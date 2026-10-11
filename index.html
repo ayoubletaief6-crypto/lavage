@@ -48,7 +48,13 @@ button{font-family:inherit}
 .warn{color:var(--bad);font-size:12px;font-weight:700;margin-top:3px}
 .acts{grid-column:1/-1;display:flex;gap:6px;border-top:1px dashed var(--line);padding-top:8px}
 .acts button,.acts a{flex:1;height:38px;border-radius:10px;border:1px solid var(--line);background:var(--bg);color:var(--ink);font:700 13px 'Tajawal',sans-serif;cursor:pointer;display:grid;place-items:center;text-decoration:none}
+.tags .c2{background:#FCE8B8;color:#4a3300}.tags .c3{background:var(--bad);color:#fff}
+.ph{width:50px;height:50px;border-radius:15px;object-fit:cover;cursor:zoom-in;display:block}
+.pbox{display:flex;align-items:center;gap:10px;margin:4px 0 10px}.pbtn{flex:1;height:46px;border:1px dashed var(--teal);border-radius:12px;display:grid;place-items:center;font:700 14px 'Tajawal',sans-serif;color:var(--teal);cursor:pointer}.pbox img{width:46px;height:46px;border-radius:10px;object-fit:cover;display:none}.pbox.has img{display:block}.pbox button{display:none;height:46px;padding:0 14px;border-radius:12px;border:1px solid var(--line);background:var(--bg);color:var(--ink);font:700 14px 'Tajawal',sans-serif;cursor:pointer}.pbox.has button{display:block}
 .acts .go{background:var(--ok);border-color:var(--ok);color:#fff}
+.acts .wa,.rl .wa{background:#25D366;border-color:#25D366;color:#073B1B}
+.remb{width:100%;height:42px;margin-bottom:10px;border-radius:12px;border:1px dashed #25D366;background:var(--card);color:var(--ink);font:700 14px 'Tajawal',sans-serif;cursor:pointer}
+.rl{display:flex;flex-direction:column;gap:8px;margin-bottom:12px}.rl>div{display:flex;align-items:center;gap:8px;border:1px solid var(--line);border-radius:12px;padding:8px 10px}.rl>div>span{flex:1;min-width:0}.rl small{display:block;color:var(--mute)}.rl a{height:38px;padding:0 14px;border-radius:10px;border:1px solid #25D366;text-decoration:none;font:700 13px 'Tajawal',sans-serif;display:grid;place-items:center}.rl .sent{opacity:.5}
 .empty{text-align:center;color:var(--mute);padding:34px 10px;border:2px dashed var(--line);border-radius:18px}.empty div{font-size:40px}
 .fab{position:fixed;inset-inline:14px;bottom:calc(14px + env(safe-area-inset-bottom,0px));max-width:532px;margin:0 auto;height:56px;border:0;border-radius:18px;background:linear-gradient(90deg,var(--teal),var(--teal2));color:#fff;font:800 18px 'Tajawal',sans-serif;cursor:pointer;box-shadow:0 8px 20px rgba(14,140,154,.4)}
 :focus-visible{outline:3px solid var(--sign);outline-offset:2px}
@@ -78,7 +84,8 @@ button{font-family:inherit}
     <div class="mini"><div><b id="sAll">0</b>مواعيد</div><div><b id="sWait">0</b>ينتظرو</div><div><b id="sDone">0</b>خلصو</div></div>
   </header>
   <div class="week" id="week"></div>
-  <div class="tools"><input id="q" placeholder="🔍 بحث بالاسم أو الترقيم"><div class="tabs" id="tabs"><button data-t="all" class="on">الكل</button><button data-t="wait">ينتظرو</button><button data-t="done">خلصو</button></div></div>
+  <div class="tools"><input id="q" placeholder="🔍 بحث بالاسم أو الماركة أو الترقيم"><div class="tabs" id="tabs"><button data-t="all" class="on">الكل</button><button data-t="wait">ينتظرو</button><button data-t="done">خلصو</button></div></div>
+  <button class="remb" id="remAll"></button>
   <div class="list" id="list"></div>
 </div>
 <button class="fab" id="add">+ موعد جديد</button>
@@ -88,14 +95,24 @@ button{font-family:inherit}
   <div class="row"><div class="f"><label for="name">اسم الزبون</label><input id="name" autocomplete="off"></div>
   <div class="f"><label for="phone">الهاتف</label><input id="phone" type="tel" inputmode="tel" dir="ltr" style="text-align:right"></div></div>
   <div class="lb">نوع السيارة</div><div class="chips" id="cars"></div>
-  <div class="f"><label for="plate">الترقيم (اختياري)</label><input id="plate" dir="ltr" style="text-align:right"></div>
+  <div class="lb">حالة السيارة</div><div class="chips" id="conds"></div>
+  <div class="row"><div class="f"><label for="brand">الماركة (اختياري)</label><input id="brand" list="brands" dir="ltr" autocomplete="off" style="text-align:right"><datalist id="brands"><option value="Renault"><option value="Peugeot"><option value="Citroën"><option value="Dacia"><option value="Hyundai"><option value="Kia"><option value="Toyota"><option value="Volkswagen"><option value="Seat"><option value="Skoda"><option value="Fiat"><option value="Chery"><option value="Geely"><option value="Suzuki"><option value="Nissan"><option value="Ford"><option value="Opel"><option value="Chevrolet"><option value="Mercedes"><option value="BMW"><option value="Audi"><option value="Mazda"><option value="Mitsubishi"><option value="Isuzu"><option value="Haval"><option value="MG"><option value="Jeep"><option value="Land Rover"><option value="Honda"><option value="Lada"></datalist></div>
+  <div class="f"><label for="plate">الترقيم (اختياري)</label><input id="plate" dir="ltr" style="text-align:right"></div></div>
   <div class="lb">نوع الغسيل</div><div class="chips" id="svcs"></div>
   <div class="row"><div class="f"><label for="price">السعر (دج)</label><input id="price" type="number" inputmode="numeric" min="0" dir="ltr" style="text-align:right"></div>
   <div class="f"><label for="time">الوقت</label><input id="time" type="time"></div></div>
+  <div class="lb">صورة السيارة (اختياري)</div><div class="pbox" id="pbox"><label class="pbtn">📷 صوّر ولا اختار صورة<input id="photo" type="file" accept="image/*" hidden></label><img id="pprev" alt=""><button type="button" id="pdel">✕</button></div>
   <div class="f"><label for="date">التاريخ</label><input id="date" type="date"></div>
   <div class="err" id="err"></div>
   <div class="btns"><button class="btn" id="cancel">إلغاء</button><button class="btn main" id="save">حفظ الموعد</button></div>
 </div></div>
+
+<div class="bg" id="rbg"><div class="sheet" role="dialog" aria-modal="true">
+  <h2 id="rTitle">تذكير الزبناء</h2><div class="rl" id="rl"></div>
+  <div class="btns"><button class="btn" id="rclose">سكّر</button></div>
+</div></div>
+
+<div class="bg" id="pbg" style="align-items:center;padding:14px"><img id="pbig" alt="" style="max-width:100%;max-height:90vh;border-radius:14px"></div>
 
 <div class="login" id="login"><div class="box"><h2>🚗 محطة الغسيل</h2><p>سجّل دخولك للمتابعة</p>
 <div class="f"><label for="em">الإيميل</label><input id="em" type="email" dir="ltr" autocomplete="username" style="text-align:right"></div>
@@ -111,15 +128,25 @@ button{font-family:inherit}
   var KEY='carwash-rdv-v1',items=[],cur=iso(new Date()),editId=null,tab='all',db=null,seed=[],seeded=false;
   var CARS=[['سيارة صغيرة','🚗'],['سيدان','🚘'],['SUV / 4x4','🚙'],['بيك آب','🛻'],['فورغون / كميونيت','🚐'],['موطو','🏍️']];
   var SVCS=[['غسيل خارجي','🫧',500],['غسيل داخلي','🧽',700],['غسيل كامل','✨',1000],['غسيل + تلميع','💎',2500]];
-  var selCar=CARS[0][0],selSvc=SVCS[0][0],priceTouched=false;
+  var CONDS=[['نضيفة','✅'],['وسخة','🟠'],['وسخة جداً','🔴']];
+  var selPhoto='',selCond=CONDS[0][0],selCar=CARS[0][0],selSvc=SVCS[0][0],priceTouched=false;
   function $(i){return document.getElementById(i)}
   function iso(d){var m=d.getMonth()+1,x=d.getDate();return d.getFullYear()+'-'+(m<10?'0':'')+m+'-'+(x<10?'0':'')+x}
   function parse(s){var p=s.split('-');return new Date(+p[0],+p[1]-1,+p[2])}
   function esc(s){var d=document.createElement('div');d.textContent=s;return d.innerHTML}
   function fmt(n){return '\u2066'+String(n||0).replace(/\B(?=(\d{3})+(?!\d))/g,'\u00a0')+'\u2069'}
   function icon(list,v){for(var i=0;i<list.length;i++)if(list[i][0]===v)return list[i][1];return '•'}
+  function waNum(p){var n=String(p||'').replace(/\D/g,'');if(n.indexOf('00')===0)n=n.slice(2);else if(n.charAt(0)==='0')n='213'+n.slice(1);return n}
+  function dayWord(ds){var t=new Date();t.setHours(0,0,0,0);var diff=Math.round((parse(ds)-t)/864e5);
+    if(diff===0)return 'اليوم';if(diff===1)return 'غدوة';return 'نهار '+parse(ds).toLocaleDateString('ar-DZ-u-nu-latn',{weekday:'long',day:'numeric',month:'long'})}
+  function waLink(x){var m='السلام عليكم '+x.name+'، تذكير بموعدك '+dayWord(x.date)+' على الساعة '+x.time+' في محطة الغسيل ('+x.svc+'). نستناك 🚗';
+    return 'https://wa.me/'+waNum(x.phone)+'?text='+encodeURIComponent(m)}
+  function pending(){return items.filter(function(x){return x.date===cur&&!x.done&&x.phone}).sort(function(a,b){return a.time<b.time?-1:1})}
   function setSync(ok,msg){$('sync').textContent=msg||(ok?'● مشترك بين الأجهزة':'على هذا الجهاز فقط')}
-  function cache(){try{localStorage.setItem(KEY,JSON.stringify(items))}catch(e){}}
+  function cache(){try{localStorage.setItem(KEY,JSON.stringify(items.map(function(i){var c=Object.assign({},i);delete c.photo;return c})))}catch(e){}}
+  function okPhoto(p){return typeof p==='string'&&p.indexOf('data:image/')===0}
+  function shrink(file,cb){var r=new FileReader();r.onload=function(){var im=new Image();im.onload=function(){var sc=Math.min(1,800/Math.max(im.width,im.height)),c=document.createElement('canvas');c.width=Math.round(im.width*sc);c.height=Math.round(im.height*sc);c.getContext('2d').drawImage(im,0,0,c.width,c.height);cb(c.toDataURL('image/jpeg',0.65))};im.onerror=function(){cb('')};im.src=r.result};r.onerror=function(){cb('')};r.readAsDataURL(file)}
+  function showPrev(){var b=$('pbox');if(selPhoto){$('pprev').src=selPhoto;b.classList.add('has')}else{$('pprev').removeAttribute('src');b.classList.remove('has')}}
 
   function load(){
     try{var r=localStorage.getItem(KEY);items=r?JSON.parse(r):[]}catch(e){items=[]}
@@ -168,23 +195,25 @@ button{font-family:inherit}
       w+='<button class="wd'+(k===0?' on':'')+'" data-d="'+s+'"><small>'+x.toLocaleDateString('ar-DZ-u-nu-latn',{weekday:'short'})+'</small><b>'+x.getDate()+'</b>'+(n?'<i></i>':'')+'</button>'}
     w+='<label class="pick">📅<input type="date" id="dPick" value="'+cur+'" aria-label="اختر التاريخ"></label>';
     $('week').innerHTML=w;
+    var pn=pending().length;$('remAll').textContent='💬 ذكّر زبناء هذا النهار ('+pn+')';$('remAll').style.display=pn?'':'none';
     // list
     var q=$('q').value.trim().toLowerCase();
-    var show=day.filter(function(x){return(tab==='all'||(tab==='done')===!!x.done)&&(!q||(x.name+' '+(x.plate||'')+' '+(x.phone||'')).toLowerCase().indexOf(q)>=0)});
+    var show=day.filter(function(x){return(tab==='all'||(tab==='done')===!!x.done)&&(!q||(x.name+' '+(x.brand||'')+' '+(x.plate||'')+' '+(x.phone||'')).toLowerCase().indexOf(q)>=0)});
     var L=$('list');
     if(!show.length){L.innerHTML='<div class="empty"><div>🫧</div>'+(day.length?'ما كاش نتيجة.':'ما كاش مواعيد في هذا النهار.<br>اضغط «موعد جديد» باش تزيد.')+'</div>';return}
     var cnt={};day.forEach(function(x){cnt[x.time]=(cnt[x.time]||0)+1});
     L.innerHTML=show.map(function(x){
       var clash=cnt[x.time]>1&&!x.done;
       return '<div class="rdv'+(x.done?' done':'')+(clash?' clash':'')+'">'+
-        '<div class="ic">'+icon(CARS,x.car)+'</div>'+
-        '<div><div class="nm">'+esc(x.name)+'</div><div class="sb">'+esc(x.car)+(x.plate?' · <span dir="ltr">'+esc(x.plate)+'</span>':'')+'</div>'+
-        '<div class="tags"><span>'+icon(SVCS,x.svc)+' '+esc(x.svc)+'</span>'+(x.price?'<span class="pr">'+fmt(x.price)+' دج</span>':'')+'</div>'+
+        '<div class="ic">'+(okPhoto(x.photo)?'<img class="ph" alt="" src="'+x.photo+'">':icon(CARS,x.car))+'</div>'+
+        '<div><div class="nm">'+esc(x.name)+'</div><div class="sb">'+esc(x.car)+(x.brand?' · '+esc(x.brand):'')+(x.plate?' · <span dir="ltr">'+esc(x.plate)+'</span>':'')+'</div>'+
+        '<div class="tags"><span>'+icon(SVCS,x.svc)+' '+esc(x.svc)+'</span>'+(x.cond?'<span class="c'+(CONDS.map(function(c){return c[0]}).indexOf(x.cond)+1)+'">'+icon(CONDS,x.cond)+' '+esc(x.cond)+'</span>':'')+(x.price?'<span class="pr">'+fmt(x.price)+' دج</span>':'')+'</div>'+
         (clash?'<div class="warn">⚠ فيه موعد آخر في نفس الوقت</div>':'')+'</div>'+
         '<div class="side"><div class="time">'+x.time+'</div><span class="badge">'+(x.done?'تم ✓':'ينتظر')+'</span></div>'+
         '<div class="acts">'+
         '<button class="'+(x.done?'':'go')+'" data-a="done" data-id="'+x.id+'">'+(x.done?'↺ رجّعو':'✓ خلّص')+'</button>'+
         '<button data-a="edit" data-id="'+x.id+'">✎ تعديل</button>'+
+        (x.phone&&!x.done?'<a class="wa" target="_blank" rel="noopener" href="'+waLink(x)+'">💬 ذكّر</a>':'')+
         (x.phone?'<a href="tel:'+esc(x.phone)+'">☎ اتصل</a>':'')+
         '<button data-a="del" data-id="'+x.id+'">✕ حذف</button></div></div>';
     }).join('');
@@ -195,16 +224,17 @@ button{font-family:inherit}
     $(el).onclick=function(e){var b=e.target.closest('button');if(!b)return;fn(b.dataset.v);chips(el,list,b.dataset.v,fn)};
   }
   function pickCar(v){selCar=v}
+  function pickCond(v){selCond=v}
   function pickSvc(v){selSvc=v;if(!priceTouched){for(var i=0;i<SVCS.length;i++)if(SVCS[i][0]===v)$('price').value=SVCS[i][2]}}
   function openSheet(x){
     editId=x?x.id:null;priceTouched=!!x;
     $('sTitle').textContent=x?'تعديل الموعد':'موعد جديد';
-    $('name').value=x?x.name:'';$('phone').value=x?x.phone:'';$('plate').value=x?x.plate:'';
-    selCar=x?x.car:CARS[0][0];selSvc=x?x.svc:SVCS[0][0];
+    $('name').value=x?x.name:'';$('phone').value=x?x.phone:'';$('plate').value=x?x.plate:'';$('brand').value=x?(x.brand||''):'';
+    selCar=x?x.car:CARS[0][0];selSvc=x?x.svc:SVCS[0][0];selCond=x&&x.cond?x.cond:CONDS[0][0];selPhoto=x&&okPhoto(x.photo)?x.photo:'';$('photo').value='';showPrev();
     $('price').value=x?(x.price||''):SVCS[0][2];
     $('date').value=x?x.date:cur;
     var n=new Date();$('time').value=x?x.time:(('0'+n.getHours()).slice(-2)+':'+('0'+n.getMinutes()).slice(-2));
-    chips('cars',CARS,selCar,pickCar);chips('svcs',SVCS,selSvc,pickSvc);
+    chips('cars',CARS,selCar,pickCar);chips('conds',CONDS,selCond,pickCond);chips('svcs',SVCS,selSvc,pickSvc);
     $('err').textContent='';$('bg').classList.add('open');setTimeout(function(){$('name').focus()},60);
   }
   function closeSheet(){$('bg').classList.remove('open')}
@@ -222,12 +252,13 @@ button{font-family:inherit}
     var name=$('name').value.trim(),date=$('date').value,time=$('time').value;
     if(!name){$('err').textContent='اكتب اسم الزبون.';return}
     if(!date||!time){$('err').textContent='اختار التاريخ والوقت.';return}
-    var o={name:name,phone:$('phone').value.trim(),car:selCar,plate:$('plate').value.trim(),svc:selSvc,date:date,time:time,price:parseInt($('price').value,10)||0};
+    var o={name:name,phone:$('phone').value.trim(),car:selCar,cond:selCond,brand:$('brand').value.trim(),photo:selPhoto,plate:$('plate').value.trim(),svc:selSvc,date:date,time:time,price:parseInt($('price').value,10)||0};
     if(editId){var old=items.filter(function(x){return x.id===editId})[0]||{};o.id=editId;o.done=!!old.done}
     else{o.id='r'+Date.now()+Math.random().toString(36).slice(2,5);o.done=false}
     put(o);cur=date;closeSheet();
   };
   $('list').onclick=function(e){
+    if(e.target.classList.contains('ph')){$('pbig').src=e.target.src;$('pbg').classList.add('open');return}
     var b=e.target.closest('button[data-a]');if(!b)return;
     var id=b.dataset.id,x=items.filter(function(i){return i.id===id})[0];if(!x)return;
     if(b.dataset.a==='done'){put(Object.assign({},x,{done:!x.done}))}
@@ -238,6 +269,17 @@ button{font-family:inherit}
         setTimeout(function(){if(b.isConnected){b.textContent='✕ حذف';b.style.background='';b.style.color='';delete b.dataset.arm}},2500)}
     }
   };
+  $('remAll').onclick=function(){
+    var L=pending();$('rTitle').textContent='تذكير '+$('dTitle').textContent;
+    $('rl').innerHTML=L.map(function(x){return '<div><span><b>'+esc(x.name)+'</b><small><span dir="ltr">'+x.time+'</span> · '+esc(x.svc)+'</small></span><a class="wa" target="_blank" rel="noopener" href="'+waLink(x)+'">💬 ذكّر</a></div>'}).join('');
+    $('rbg').classList.add('open')};
+  $('rl').onclick=function(e){var a=e.target.closest('a');if(a)a.parentNode.classList.add('sent')};
+  $('rclose').onclick=function(){$('rbg').classList.remove('open')};
+  $('rbg').onclick=function(e){if(e.target===$('rbg'))$('rbg').classList.remove('open')};
+  $('photo').onchange=function(){var f=this.files&&this.files[0];if(!f)return;
+    shrink(f,function(d){if(d){selPhoto=d;showPrev()}else $('err').textContent='ما قدرتش نقرا الصورة.'})};
+  $('pdel').onclick=function(){selPhoto='';$('photo').value='';showPrev()};
+  $('pbg').onclick=function(){$('pbg').classList.remove('open')};
   load();render();
 })();
 </script>
